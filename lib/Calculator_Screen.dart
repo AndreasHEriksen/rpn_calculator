@@ -123,7 +123,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     CalculatorButton('4', () => addToStack('4')),
                     CalculatorButton('5', () => addToStack('5')),
                     CalculatorButton('6', () => addToStack('6')),
-                    CalculatorButton('/', () => addToStack('/')),
+                    CalculatorButton('/', () => addToStack('/')), // Switched places with '0'
                   ],
                 ),
                 Row(
@@ -132,17 +132,42 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     CalculatorButton('1', () => addToStack('1')),
                     CalculatorButton('2', () => addToStack('2')),
                     CalculatorButton('3', () => addToStack('3')),
-                    CalculatorButton('+', () => addToStack('+')),
+                    CalculatorButton('0', () => addToStack('0')), // Switched places with '/'
                   ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    CalculatorButton('0', () => addToStack('0')),
-                    CalculatorButton('.', () => addToStack('.')),
-                    CalculatorButton('Enter', () => evaluate()),
                     CalculatorButton('-', () => addToStack('-')),
                     CalculatorButton('*', () => addToStack('*')),
+                    CalculatorButton('+', () => addToStack('+')),
+                    SizedBox(width: 24),
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.all(12),
+                        child: ElevatedButton(
+                          onPressed: () => evaluate(),
+                          child: Text(
+                            'Enter',
+                            style: TextStyle(fontSize: 24),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.all(20),
+                            backgroundColor: Colors.orange,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                            ),
+                          ).copyWith(
+                            backgroundColor: MaterialStateProperty.resolveWith(
+                                  (states) => Colors.orange,
+                            ),
+                            foregroundColor: MaterialStateProperty.resolveWith(
+                                  (states) => Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ],
@@ -171,7 +196,8 @@ class CalculatorButton extends StatelessWidget {
           style: TextStyle(fontSize: 24),
         ),
         style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.all(20), backgroundColor: Colors.orange,
+          padding: EdgeInsets.all(20),
+          backgroundColor: Colors.orange,
           shape: CircleBorder(),
         ).copyWith(
           backgroundColor: MaterialStateProperty.resolveWith(
