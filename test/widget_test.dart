@@ -1,30 +1,35 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:rpn_calculator/main.dart';
+import 'package:rpn_calculator/calculator_screen.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('Test if pressing numeric buttons adds to the stack in RPN', (
+      WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(home: CalculatorScreen()));
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    await tapButton(tester, '1');
+    await tapButton(tester, '2');
+    await tapButton(tester, '3');
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Check if the stack is correct in RPN
+    expect(find.text('1 2 3'), findsOneWidget);
   });
+
+  testWidgets('Test RPN calculator error handling', (WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(home: CalculatorScreen()));
+
+    await tapButton(tester, '5');
+    await tapButton(tester, '0');
+    await tapButton(tester, '/');
+    await tapButton(tester, 'Enter');
+
+    // Check if the display shows the error message
+    expect(find.text('Error'), findsOneWidget);
+  });
+  
+}
+
+Future<void> tapButton(WidgetTester tester, String buttonText) async {
+  await tester.tap(find.text(buttonText));
+  await tester.pump();
 }

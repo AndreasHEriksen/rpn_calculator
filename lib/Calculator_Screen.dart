@@ -11,7 +11,12 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
   void addToStack(String value) {
     setState(() {
-      stack.add(value);
+      if (value == 'C') {
+        // Clear the entire stack
+        stack.clear();
+      } else {
+        stack.add(value);
+      }
       display = stack.join(' ');
     });
   }
@@ -24,21 +29,34 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   }
 
   void evaluate() {
-    if (stack.isEmpty) return;
+    setState(() {
+      if (stack.isNotEmpty) {
+        String lastItem = stack.last;
 
-    try {
-      // Basic RPN evaluation
-      double result = rpnEvaluate(stack);
-      setState(() {
-        stack.clear();
-        stack.add(result.toString());
-        display = stack.join(' ');
-      });
-    } catch (e) {
-      setState(() {
-        display = 'Error';
-      });
-    }
+        if (isOperator(lastItem)) {
+          // If the last item is an operator, perform the calculation
+          try {
+            double result = rpnEvaluate(stack);
+            stack.clear();
+            stack.add(result.toString());
+            display = stack.join(' ');
+          } catch (e) {
+            stack.clear();
+            display = 'Error';
+          }
+        } else {
+          // Concatenate the numbers when Enter is pressed
+          String result = stack.join('');
+          stack.clear();
+          stack.add(result);
+          display = stack.join(' ');
+        }
+      }
+    });
+  }
+
+  bool isOperator(String value) {
+    return value == '+' || value == '-' || value == '*' || value == '/';
   }
 
   double rpnEvaluate(List<String> expression) {
@@ -114,7 +132,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     CalculatorButton('7', () => addToStack('7')),
                     CalculatorButton('8', () => addToStack('8')),
                     CalculatorButton('9', () => addToStack('9')),
-                    CalculatorButton('C', () => clearStack()),
+                    CalculatorButton('C', () => addToStack('C')),
                   ],
                 ),
                 Row(
@@ -123,7 +141,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     CalculatorButton('4', () => addToStack('4')),
                     CalculatorButton('5', () => addToStack('5')),
                     CalculatorButton('6', () => addToStack('6')),
-                    CalculatorButton('/', () => addToStack('/')), // Switched places with '0'
+                    CalculatorButton('/', () => addToStack('/')),
                   ],
                 ),
                 Row(
@@ -132,7 +150,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     CalculatorButton('1', () => addToStack('1')),
                     CalculatorButton('2', () => addToStack('2')),
                     CalculatorButton('3', () => addToStack('3')),
-                    CalculatorButton('0', () => addToStack('0')), // Switched places with '/'
+                    CalculatorButton('0', () => addToStack('0')),
                   ],
                 ),
                 Row(
