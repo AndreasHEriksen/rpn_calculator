@@ -26,7 +26,7 @@ void main() {
     // Check if the display shows the error message
     expect(find.text('Error'), findsOneWidget);
   });
-  
+
 }
 
 Future<void> tapButton(WidgetTester tester, String buttonText) async {
