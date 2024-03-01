@@ -11,7 +11,7 @@ void main() {
     await tapButton(tester, '2');
     await tapButton(tester, '3');
 
-    // Check if the stack is correct in RPN
+
     expect(find.text('1 2 3'), findsOneWidget);
   });
 
@@ -23,9 +23,24 @@ void main() {
     await tapButton(tester, '/');
     await tapButton(tester, 'Enter');
 
-    // Check if the display shows the error message
     expect(find.text('Error'), findsOneWidget);
   });
+
+  testWidgets('Test addition operation in RPN calculator', (WidgetTester tester) async {
+
+    await tester.pumpWidget(MaterialApp(home: CalculatorScreen()));
+
+
+    await tester.tap(find.text('2'));
+    await tester.tap(find.text('3'));
+    await tester.tap(find.text('+'));
+
+    await tester.tap(find.text('Enter'));
+    await tester.pump();
+
+    expect(find.text('5'), findsOneWidget);
+  });
+
 
 }
 
